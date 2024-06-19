@@ -1,0 +1,57 @@
+.zenux-grid {
+    background-color: white;
+    line-height: 1.4rem;
+
+    table td {
+        padding: 8px;
+    }
+
+    tr.selected {
+        background-color: rgba(0, 0, 1, 0.16);
+
+        td.select::before {
+            color: green;
+            content: "✓";
+        }
+    }
+
+    tr:hover {
+        background-color: rgba(0, 0, 1, 0.3);
+    }
+
+    td.select {
+        text-align: center;
+    }
+
+    .page-control {
+        margin: 10px auto;
+        text-align: center;
+    }
+
+    .page-control button {
+        border: none;
+        cursor: pointer;
+        padding: 4px 8px;
+    }
+
+    form {
+        display: inline-block;
+        font-size: 1.6rem;
+        margin: 10px auto;
+        text-align: center;
+    }
+}
+
+
+.zenux-grid table {
+    border-collapse: collapse;
+    margin: auto;
+}
+
+.zenux-grid table td {
+    border: 1px solid rgba(0, 0, 1, 0.5);
+}
+
+.zenux-grid {
+    width: 100%;
+}

@@ -1,0 +1,6 @@
+dist/
+public/main.js
+public/main.js.map
+example.json
+*storybook.log
+_local/
