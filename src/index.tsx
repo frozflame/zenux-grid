@@ -2,6 +2,11 @@ import "./styles.scss";
 import React, {FormEvent, useEffect, useRef, useState} from "react";
 import {Column, PageData, QueryParams, Row} from "./types";
 import {Td} from "./td";
+import {QueryManager} from "./query";
+import {SelectionManager} from "./selection";
+import {getVisiblePageNums} from "./utils";
+
+export type {Column, PageData, QueryParams, Row} from "./types";
 
 
 interface TrProps {
@@ -63,58 +68,13 @@ export function Table({columns, rows, selectionManager}: TbodyProps) {
     </div>
 }
 
-type NumOrNull = number | null;
 
-function getVisiblePageNums(pageNum: number, pageNumTotal: number): NumOrNull[] {
-    const nums: NumOrNull[] = [1];
-    for (let num = 2; num < pageNumTotal; num++) {
-        if (Math.abs(pageNum - num) < 4) {
-            nums.push(num);
-        } else if (nums[nums.length - 1]) {
-            nums.push(null);
-        }
-    }
-    if (pageNumTotal > 1) {
-        nums.push(pageNumTotal);
-    }
-    return nums;
-}
-
-
-class SelectionManager {
-    selection: Set<string>;
-    setSelection: (selection: Set<string>) => void;
-
-    constructor(selection: Set<string>, setSelection: (selection: Set<string>) => void) {
-        this.selection = selection;
-        this.setSelection = setSelection;
-    }
-
-    add(ids: string[]) {
-        const selection = new Set(this.selection);
-        ids.forEach((id: string) => selection.add(id));
-        this.setSelection(selection);
-    }
-
-    remove(ids: string[]) {
-        const selection = new Set(this.selection);
-        ids.forEach((id: string) => selection.delete(id));
-        this.setSelection(selection);
-    }
-
-    clear() {
-        this.selection = new Set();
-        this.setSelection(this.selection);
-    }
-}
-
-
-export interface SelectionControlProps {
+export interface SelectionWidgetProps {
     pageData: PageData;
     selectionManager: SelectionManager;
 }
 
-function SelectionControl({pageData, selectionManager}: SelectionControlProps) {
+function SelectionWidget({pageData, selectionManager}: SelectionWidgetProps) {
     function selectAll() {
         selectionManager.add(pageData.rows.map(row => row.id));
     }
@@ -147,70 +107,55 @@ function SelectionControl({pageData, selectionManager}: SelectionControlProps) {
 }
 
 
-class QueryManager {
-    pageData: PageData;
-    setPageData: (pageData: PageData) => void;
-    queryParams: QueryParams;
-    setQueryParams: (queryParams: QueryParams) => void;
-    queryPageData: (queryParams: QueryParams) => Promise<PageData>;
-
-
-    constructor(
-        pageData: PageData,
-        setPageData: (pageData: PageData) => void,
-        queryParams: QueryParams,
-        setQueryParams: (queryParams: QueryParams) => void,
-        queryPageData: (queryParams: QueryParams) => Promise<PageData>,
-    ) {
-        this.pageData = pageData;
-        this.setPageData = setPageData;
-        this.queryParams = queryParams;
-        this.setQueryParams = setQueryParams;
-        this.queryPageData = queryPageData;
-    }
-
-    async apply(queryParams: QueryParams) {
-        console.log('applying queryParams:', queryParams);
-        this.setPageData(await this.queryPageData(queryParams));
-    }
-
-    changePageNum(pageNum: number) {
-        const queryParams = {...this.queryParams, pageNum: pageNum};
-        this.setQueryParams(queryParams);
-        this.apply(queryParams).catch(console.error);
-    }
-
-    changeKeyword(keyword: string) {
-        const queryParams = {...this.queryParams, keyword: keyword};
-        this.setQueryParams(queryParams);
-        this.apply(queryParams).catch(console.error);
-    }
-
-    changePageSize(pageSize: number) {
-        const queryParams = {...this.queryParams, pageSize: pageSize};
-        this.setQueryParams(queryParams);
-        this.apply(queryParams).catch(console.error);
-    }
-}
-
-
-const initialQueryParams: QueryParams = {
-    pageNum: 1,
-    pageSize: 10,
-    keyword: "",
-}
-
-
 export interface GridProps {
     columns: Column[];
     rows?: Row[];
     queryPageData: (_queryParams: QueryParams) => Promise<PageData>;
 }
 
+
+interface PageSwitchWidgetProps {
+    queryManager: QueryManager;
+}
+
+function PageSwitchWidget({queryManager}: PageSwitchWidgetProps) {
+    const pageNum = queryManager.queryParams.pageNum;
+    const pageNumTotal = queryManager.pageData.pageNumTotal;
+
+    const visiblePageNums = getVisiblePageNums(pageNum, pageNumTotal);
+    const pageLinks = visiblePageNums.map((num: number | null, idx) => {
+        if (!num) {
+            return <span key={idx}>...</span>
+        }
+        const disabled = num === pageNum;
+        return <button key={idx} disabled={disabled} onClick={() => queryManager.changePageNum(num)}>{num}</button>
+    });
+
+    function prevPage() {
+        queryManager.prevPage();
+    }
+
+    function nextPage() {
+        queryManager.nextPage();
+    }
+
+    return <>
+        <button onClick={prevPage} disabled={pageNum === 1}>Prev</button>
+        {pageLinks}
+        <button onClick={nextPage} disabled={pageNum === pageNumTotal}>Next</button>
+        <span>Page {pageNum} of {pageNumTotal}</span>
+    </>
+}
+
 export function Grid({columns, rows, queryPageData}: GridProps) {
     const initialPageData: PageData = {
         rows: rows || [],
         pageNumTotal: 1
+    }
+    const initialQueryParams: QueryParams = {
+        pageNum: 1,
+        pageSize: 10,
+        keyword: "",
     }
     const [pageData, setPageData] = useState<PageData>(initialPageData);
     const [queryParams, setQueryParams] = useState<QueryParams>(initialQueryParams);
@@ -232,15 +177,6 @@ export function Grid({columns, rows, queryPageData}: GridProps) {
     if (!pageData) {
         return <div>Loading ... (react)</div>
     }
-
-    const visiblePageNums = getVisiblePageNums(queryParams.pageNum, pageData.pageNumTotal);
-    const pageLinks = visiblePageNums.map((num: number | null, idx) => {
-        if (!num) {
-            return <span key={idx}>...</span>
-        }
-        const disabled = num === queryParams.pageNum;
-        return <button key={idx} disabled={disabled} onClick={() => queryManager.changePageNum(num)}>{num}</button>
-    });
 
 
     function handleSubmit(event: FormEvent) {
@@ -265,11 +201,12 @@ export function Grid({columns, rows, queryPageData}: GridProps) {
         queryManager.changePageSize(pageSize);
     }
 
+    console.log(queryParams, queryManager, queryManager.prevPage);
+
     return <div className="zenux-grid">
         <Table columns={columns} rows={pageData.rows} selectionManager={selectionManager}/>
         <div className="page-control">
-            {pageLinks}
-            <span>Page {queryParams.pageNum} of {pageData.pageNumTotal}</span>
+            <PageSwitchWidget queryManager={queryManager}/>
             <form action="" onSubmit={handleSubmit} onReset={handleReset}>
                 <input type="text" name="keyword" ref={keywordInput}/>
                 <input type="submit"/>
@@ -286,7 +223,7 @@ export function Grid({columns, rows, queryPageData}: GridProps) {
                 <option value="100">100 rows</option>
             </select>
 
-            <SelectionControl {...{pageData, selectionManager}}/>
+            <SelectionWidget {...{pageData, selectionManager}}/>
         </div>
     </div>
 }
