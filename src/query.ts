@@ -1,3 +1,4 @@
+import {clamp} from "zenux";
 import {PageData, QueryParams} from "./types";
 
 export class QueryManager {
@@ -38,13 +39,14 @@ export class QueryManager {
     }
 
     changePageNum(pageNum: number) {
-        const queryParams = {...this.queryParams, pageNum: pageNum};
+        pageNum = clamp(pageNum, 1, this.pageData.pageNumTotal);
+        const queryParams = {...this.queryParams, pageNum};
         this.setQueryParams(queryParams);
         this.apply(queryParams).catch(console.error);
     }
 
     changeKeyword(keyword: string) {
-        const queryParams = {...this.queryParams, keyword: keyword};
+        const queryParams = {...this.queryParams, keyword};
         this.setQueryParams(queryParams);
         this.apply(queryParams).catch(console.error);
     }
