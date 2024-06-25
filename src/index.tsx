@@ -113,13 +113,6 @@ function SelectionWidget({pageData, selectionManager}: SelectionWidgetProps) {
 }
 
 
-export interface GridProps {
-    columns: Column[];
-    rows?: Row[];
-    queryPageData: (_queryParams: QueryParams) => Promise<PageData>;
-}
-
-
 interface PageSwitchWidgetProps {
     queryManager: QueryManager;
 }
@@ -153,7 +146,21 @@ function PageSwitchWidget({queryManager}: PageSwitchWidgetProps) {
     </>
 }
 
-export function Grid({columns, rows, queryPageData}: GridProps) {
+
+export interface GridWires {
+    selectionManager?: SelectionManager;
+    queryManager?: QueryManager;
+}
+
+
+export interface GridProps {
+    columns: Column[];
+    rows?: Row[];
+    queryPageData: (_queryParams: QueryParams) => Promise<PageData>;
+    wires?: GridWires;
+}
+
+export function Grid({columns, rows, queryPageData, wires}: GridProps) {
     const initialPageData: PageData = {
         rows: rows || [],
         pageNumTotal: 1
@@ -168,13 +175,9 @@ export function Grid({columns, rows, queryPageData}: GridProps) {
     const [selection, setSelection] = useState<Set<string>>(new Set());
     const [selectable, setSelectable] = useState(false);
     const selectionManager = new SelectionManager(selection, setSelection, selectable, setSelectable);
-
     const keywordInput = useRef<HTMLInputElement>(null);
     const pageSizeInput = useRef<HTMLSelectElement>(null);
-
-    // console.log('rendering with pageData:', pageData);
     const queryManager = new QueryManager(pageData, setPageData, queryParams, setQueryParams, queryPageData);
-
 
     useEffect(() => {
         // console.log('in Grid(), in useEffect');
@@ -205,6 +208,11 @@ export function Grid({columns, rows, queryPageData}: GridProps) {
         }
         const pageSize = parseInt(pageSizeInput.current.value);
         queryManager.changePageSize(pageSize);
+    }
+
+    if (wires) {
+        wires.queryManager = queryManager;
+        wires.selectionManager = selectionManager;
     }
 
     return <div className="zenux-grid">

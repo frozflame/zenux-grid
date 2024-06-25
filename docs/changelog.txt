@@ -1,8 +1,14 @@
+changelog
+---------
+
+ver 0.1.5:
+* add GridWires in Grid props
+* add QueryManager.reload()
+
 ver 0.1.4:
 * export cellComponents, translateQueryParams, untranslatePageData
 * fix error when cellProps is an array or null
 * lighten selection bg color
-
 
 ver 0.1.3:
 * add state selectable/setSelectable (switch between selection mode and non-selection mode)

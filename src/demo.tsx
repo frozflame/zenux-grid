@@ -1,7 +1,8 @@
 import "./styles.scss";
 import React from 'react';
-import {Grid} from "./index";
+import {Grid, GridWires} from "./index";
 import ReactDOM from "react-dom/client";
+
 import {
     APIPageData,
     APIQueryParams,
@@ -11,7 +12,7 @@ import {
     translateQueryParams,
     untranslatePageData
 } from "./types";
-import {RawProps, cellComponents} from "./cells";
+import {cellComponents, RawProps} from "./cells";
 
 
 function YesNo({value}: RawProps) {
@@ -45,10 +46,17 @@ async function queryPageData(queryParams: QueryParams): Promise<PageData> {
     return untranslatePageData(apiPageData, queryParams.pageSize);
 }
 
+declare global {
+    interface Window {
+        zenuxGridWires?: GridWires;
+    }
+}
+
 
 async function main() {
     const columns = await getColumns();
-    const grid = <Grid queryPageData={queryPageData} columns={columns}/>;
+    window.zenuxGridWires = {};
+    const grid = <Grid queryPageData={queryPageData} columns={columns} wires={window.zenuxGridWires}/>;
     ReactDOM.createRoot(document.getElementById("root")!).render(grid);
 }
 

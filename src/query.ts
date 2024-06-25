@@ -27,6 +27,10 @@ export class QueryManager {
         this.setPageData(await this.queryPageData(queryParams));
     }
 
+    async reload(){
+        this.setPageData(await this.queryPageData(this.queryParams));
+    }
+
     prevPage() {
         const pageNum = Math.max(1, this.queryParams.pageNum - 1);
         this.changePageNum(pageNum);
