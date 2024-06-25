@@ -6,10 +6,10 @@ import {QueryManager} from "./query";
 import {SelectionManager} from "./selection";
 import {getVisiblePageNums} from "./utils";
 
-export type {
-    Column, PageData, APIPageData, QueryParams, APIQueryParams, Row,
-    translateQueryParams, untranslatePageData,
-} from "./types";
+export type {Column, PageData, APIPageData, QueryParams, APIQueryParams, Row} from "./types";
+export {translateQueryParams, untranslatePageData} from "./types";
+export type {RawProps, LinkProps, Td} from "./cells";
+export {cellComponents} from "./cells";
 
 
 interface TrProps {

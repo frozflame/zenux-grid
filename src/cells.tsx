@@ -72,7 +72,7 @@ export function Td({column, row}: TdProps) {
         return <ErrorTd column={column} row={row}/>
     }
     let cellProps = row.item[column.key];
-    if (typeof cellProps !== "object") {
+    if (typeof cellProps !== "object" || Array.isArray(cellProps) || cellProps === null) {
         cellProps = {value: cellProps}
     }
     const child = createElement(fc, cellProps);
