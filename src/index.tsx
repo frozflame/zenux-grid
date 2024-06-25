@@ -1,12 +1,15 @@
 import "./styles.scss";
-import React, {FormEvent, useEffect, useRef, useState} from "react";
+import React, {ChangeEvent, FormEvent, useEffect, useRef, useState} from "react";
 import {Column, PageData, QueryParams, Row} from "./types";
-import {Td} from "./td";
+import {Td} from "./cells";
 import {QueryManager} from "./query";
 import {SelectionManager} from "./selection";
 import {getVisiblePageNums} from "./utils";
 
-export type {Column, PageData, QueryParams, Row} from "./types";
+export type {
+    Column, PageData, APIPageData, QueryParams, APIQueryParams, Row,
+    translateQueryParams, untranslatePageData,
+} from "./types";
 
 
 interface TrProps {
@@ -54,18 +57,16 @@ export function Table({columns, rows, selectionManager}: TbodyProps) {
     if (!rows.length) {
         return <div>No result found.</div>
     }
-    return <div className="table-responsive">
-        <table className="table">
-            <thead>
-            <tr>
-                {
-                    columns.map((column, idx) => <th key={idx}>{column.name}</th>)
-                }
-            </tr>
-            </thead>
-            <Tbody columns={columns} rows={rows} selectionManager={selectionManager}/>
-        </table>
-    </div>
+    return <table className="table">
+        <thead>
+        <tr>
+            {
+                columns.map((column, idx) => <th key={idx}>{column.name}</th>)
+            }
+        </tr>
+        </thead>
+        <Tbody columns={columns} rows={rows} selectionManager={selectionManager}/>
+    </table>
 }
 
 
@@ -92,6 +93,10 @@ function SelectionWidget({pageData, selectionManager}: SelectionWidgetProps) {
         return pageData.rows.every((row: Row) => selectionManager.selection.has(row.id));
     }
 
+    function handleSelectableChange(event: ChangeEvent<HTMLInputElement>) {
+        selectionManager.setSelectable(event.target.checked);
+    }
+
     const count: number = selectionManager.selection.size;
     return <>
         <input type="button" onClick={logSelected} value="Log Selected"/>
@@ -100,6 +105,7 @@ function SelectionWidget({pageData, selectionManager}: SelectionWidgetProps) {
                 <input type="button" onClick={deselectAll} value="Deselect All"/>
                 : <input type="button" onClick={selectAll} value="Select All"/>
         }
+        <input type="checkbox" value="selectable" onChange={handleSelectableChange}/>
         {
             count > 0 ? <span>{count} items selected.</span> : <span></span>
         }
@@ -160,7 +166,8 @@ export function Grid({columns, rows, queryPageData}: GridProps) {
     const [pageData, setPageData] = useState<PageData>(initialPageData);
     const [queryParams, setQueryParams] = useState<QueryParams>(initialQueryParams);
     const [selection, setSelection] = useState<Set<string>>(new Set());
-    const selectionManager = new SelectionManager(selection, setSelection);
+    const [selectable, setSelectable] = useState(false);
+    const selectionManager = new SelectionManager(selection, setSelection, selectable, setSelectable);
 
     const keywordInput = useRef<HTMLInputElement>(null);
     const pageSizeInput = useRef<HTMLSelectElement>(null);
@@ -177,7 +184,6 @@ export function Grid({columns, rows, queryPageData}: GridProps) {
     if (!pageData) {
         return <div>Loading ... (react)</div>
     }
-
 
     function handleSubmit(event: FormEvent) {
         if (!keywordInput.current) {
@@ -201,10 +207,10 @@ export function Grid({columns, rows, queryPageData}: GridProps) {
         queryManager.changePageSize(pageSize);
     }
 
-    console.log(queryParams, queryManager, queryManager.prevPage);
-
     return <div className="zenux-grid">
-        <Table columns={columns} rows={pageData.rows} selectionManager={selectionManager}/>
+        <div className="table">
+            <Table columns={columns} rows={pageData.rows} selectionManager={selectionManager}/>
+        </div>
         <div className="page-control">
             <PageSwitchWidget queryManager={queryManager}/>
             <form action="" onSubmit={handleSubmit} onReset={handleReset}>

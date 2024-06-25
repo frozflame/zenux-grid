@@ -1,0 +1,6 @@
+ver 0.1.3:
+* add state selectable/setSelectable (switch between selection mode and non-selection mode)
+* cell components, extendable via adding entries to cellComponents
+* ErrorTd for easier debugging
+* export APIPageData, APIQueryParams
+* remove div.table-responsive

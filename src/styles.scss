@@ -2,8 +2,26 @@
     background-color: white;
     line-height: 1.4rem;
 
+    div.table {
+        width: 90%;
+        max-width: 90%;
+        margin: auto;
+        overflow-x: auto;
+    }
+
+    table {
+        //width: 6000px;
+        overflow-x: auto;
+    }
+
     table td {
         padding: 8px;
+        white-space: nowrap;
+    }
+
+    td.select::before {
+        content: "✓";
+        color: white;
     }
 
     tr.selected {
@@ -11,7 +29,6 @@
 
         td.select::before {
             color: green;
-            content: "✓";
         }
     }
 
@@ -21,6 +38,13 @@
 
     td.select {
         text-align: center;
+    }
+
+    td.error {
+        background-color: yellow;
+        font-family: monospace;
+        font-weight: bold;
+        color: red;
     }
 
     .page-control {
@@ -39,6 +63,22 @@
         font-size: 1.6rem;
         margin: 10px auto;
         text-align: center;
+    }
+
+    span.code, span.num {
+        font-family: monospace;
+    }
+
+    span.status {
+        font-weight: bold;
+    }
+
+    span.status.success {
+        color: green;
+    }
+
+    span.status.failure {
+        color: red;
     }
 }
 

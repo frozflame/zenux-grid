@@ -11,19 +11,30 @@ import {
     translateQueryParams,
     untranslatePageData
 } from "./types";
+import {RawProps, cellComponents} from "./cells";
+
+
+function YesNo({value}: RawProps) {
+    const status = value ? "success" : "failure";
+    const text = value ? "Yes" : "No";
+    return <span className={`status ${status}`}>{text}</span>
+}
+
+
+cellComponents['yesno'] = YesNo;
 
 
 async function getColumns(): Promise<Column[]> {
-    const response = await fetch("/api/meta/demo");
+    const response = await fetch("/test-api/x/columns");
     const json = await response.json();
-    return json.data.columns;
+    return json.data;
 }
 
 
 async function _getPageData(apiQueryParams: APIQueryParams): Promise<APIPageData> {
     const keyword = encodeURIComponent(apiQueryParams.keyword || "");
-    const qs = `limit=${apiQueryParams.limit}&skip=${apiQueryParams.skip}&keyword=${keyword}`
-    const url = `/api/query/sample?${qs}`;
+    const qs = `limit=${apiQueryParams.limit}&skip=${apiQueryParams.skip}&keyword=${keyword}`;
+    const url = `/test-api/x/search?${qs}`;
     const response = await fetch(url);
     const json = await response.json();
     return json.data;

@@ -24,7 +24,6 @@ export class QueryManager {
     }
 
     async apply(queryParams: QueryParams) {
-        console.log('applying queryParams:', queryParams);
         this.setPageData(await this.queryPageData(queryParams));
     }
 

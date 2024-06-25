@@ -56,6 +56,7 @@ module.exports = {
         liveReload: true,
         proxy: {
             '/api': 'http://127.0.0.1:3401',
+            '/test-api': 'http://127.0.0.1:5005',
         },
     },
     resolve: {
