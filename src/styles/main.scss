@@ -1,0 +1,11 @@
+.zenux-grid {
+    width: 100%;
+    background-color: white;
+    font-size: 14px;
+    font-family: "Helvetica Neue", Roboto, Arial, "Droid Sans", sans-serif;
+    @import "grid";
+
+    table {
+        @import "table";
+    }
+}

@@ -1,6 +1,11 @@
 changelog
 ---------
 
+ver 0.1.6:
+* change colors of tr:hover, tr.selected -- no alpha
+* split stylesheet into multiple files
+* remove some dev dependencies
+
 ver 0.1.5:
 * add GridWires in Grid props
 * add QueryManager.reload()

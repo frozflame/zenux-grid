@@ -1,10 +1,10 @@
-import "./styles.scss";
 import React, {ChangeEvent, FormEvent, useEffect, useRef, useState} from "react";
 import {Column, PageData, QueryParams, Row} from "./types";
 import {Td} from "./cells";
 import {QueryManager} from "./query";
 import {SelectionManager} from "./selection";
 import {getVisiblePageNums} from "./utils";
+import "./styles/main.scss";
 
 export type {Column, PageData, APIPageData, QueryParams, APIQueryParams, Row} from "./types";
 export {translateQueryParams, untranslatePageData} from "./types";

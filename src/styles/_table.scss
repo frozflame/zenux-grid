@@ -1,0 +1,36 @@
+th, td {
+    white-space: nowrap;
+}
+
+td {
+    border: 1px solid #aaa;
+    padding: 8px;
+}
+
+td.select::before {
+    content: "✓";
+    color: white;
+}
+
+tr:hover {
+    background-color: #d0d0d0;
+}
+
+tr.selected {
+    background-color: #e1e1e1;
+
+    td.select::before {
+        color: green;
+    }
+}
+
+td.select {
+    text-align: center;
+}
+
+td.error {
+    background-color: yellow;
+    font-family: monospace;
+    font-weight: bold;
+    color: red;
+}

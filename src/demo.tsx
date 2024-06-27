@@ -1,4 +1,3 @@
-import "./styles.scss";
 import React from 'react';
 import {Grid, GridWires} from "./index";
 import ReactDOM from "react-dom/client";
@@ -13,6 +12,7 @@ import {
     untranslatePageData
 } from "./types";
 import {cellComponents, RawProps} from "./cells";
+import "./styles/main.scss";
 
 
 function YesNo({value}: RawProps) {

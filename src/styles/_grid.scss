@@ -1,0 +1,50 @@
+* {
+    box-sizing: border-box;
+}
+
+table {
+    border-collapse: collapse;
+    margin: auto;
+    overflow-x: auto;
+}
+
+div.table {
+    margin: auto;
+    width: 96%;
+    max-width: 96%;
+    overflow-x: auto;
+}
+
+.page-control {
+    margin: 10px auto;
+    text-align: center;
+}
+
+.page-control button {
+    border: none;
+    cursor: pointer;
+    padding: 4px 8px;
+}
+
+form {
+    display: inline-block;
+    font-size: 1.6rem;
+    margin: 10px auto;
+    text-align: center;
+}
+
+span.code, span.num {
+    font-family: monospace;
+}
+
+span.status {
+    font-weight: bold;
+}
+
+span.status.success {
+    color: green;
+}
+
+span.status.failure {
+    color: red;
+}
