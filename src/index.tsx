@@ -97,18 +97,27 @@ function SelectionWidget({pageData, selectionManager}: SelectionWidgetProps) {
         selectionManager.setSelectable(event.target.checked);
     }
 
+    function handleModeButtonClick() {
+        selectionManager.setSelectable(!selectionManager.selectable);
+    }
+
     const count: number = selectionManager.selection.size;
     return <>
-        <input type="button" onClick={logSelected} value="Log Selected"/>
-        {
-            getFullSelectionStatus() ?
-                <input type="button" onClick={deselectAll} value="Deselect All"/>
-                : <input type="button" onClick={selectAll} value="Select All"/>
-        }
-        <input type="checkbox" value="selectable" onChange={handleSelectableChange}/>
-        {
-            count > 0 ? <span>{count} items selected.</span> : <span></span>
-        }
+        <div className="btn-group selection-control">
+            <button onClick={selectAll} className="select-all"
+                    disabled={!selectionManager.selectable || getFullSelectionStatus()}>Select All
+            </button>
+            <button onClick={logSelected} className="count"
+                    disabled={!count}>{count}</button>
+            <button onClick={deselectAll} className="deselect-all"
+                    disabled={!selectionManager.selectable || !count}>Deselect All
+            </button>
+            <button
+                className={selectionManager.selectable ? "mode on" : "mode off"}
+                onClick={handleModeButtonClick}>✓
+            </button>
+        </div>
+
     </>
 }
 
@@ -124,10 +133,11 @@ function PageSwitchWidget({queryManager}: PageSwitchWidgetProps) {
     const visiblePageNums = getVisiblePageNums(pageNum, pageNumTotal);
     const pageLinks = visiblePageNums.map((num: number | null, idx) => {
         if (!num) {
-            return <span key={idx}>...</span>
+            return <button key={idx} disabled className="ellipsis">...</button>
         }
-        const disabled = num === pageNum;
-        return <button key={idx} disabled={disabled} onClick={() => queryManager.changePageNum(num)}>{num}</button>
+        const current = num === pageNum;
+        return <button className={current ? 'current' : ''} key={idx} disabled={current}
+                       onClick={() => queryManager.changePageNum(num)}>{num}</button>
     });
 
     function prevPage() {
@@ -139,10 +149,11 @@ function PageSwitchWidget({queryManager}: PageSwitchWidgetProps) {
     }
 
     return <>
-        <button onClick={prevPage} disabled={pageNum === 1}>Prev</button>
-        {pageLinks}
-        <button onClick={nextPage} disabled={pageNum === pageNumTotal}>Next</button>
-        <span>Page {pageNum} of {pageNumTotal}</span>
+        <div className="btn-group page-num-control">
+            <button onClick={prevPage} disabled={pageNum === 1}>Prev</button>
+            {pageLinks}
+            <button onClick={nextPage} disabled={pageNum === pageNumTotal}>Next</button>
+        </div>
     </>
 }
 
@@ -216,18 +227,22 @@ export function Grid({columns, rows, queryPageData, wires}: GridProps) {
     }
 
     return <div className="zenux-grid">
+        <div className="page-control">
+            <SelectionWidget {...{pageData, selectionManager}}/>
+            <form action="" onSubmit={handleSubmit} onReset={handleReset} className="search-form">
+                <input className="ctrl" type="text" name="keyword" ref={keywordInput} placeholder="search..."/>
+                <input className="ctrl" type="submit"/>
+                <input className="ctrl" type="reset"/>
+            </form>
+        </div>
+
         <div className="table">
             <Table columns={columns} rows={pageData.rows} selectionManager={selectionManager}/>
         </div>
         <div className="page-control">
+            <div className="ctrl">Page {queryParams.pageNum} of {pageData.pageNumTotal}</div>
             <PageSwitchWidget queryManager={queryManager}/>
-            <form action="" onSubmit={handleSubmit} onReset={handleReset}>
-                <input type="text" name="keyword" ref={keywordInput}/>
-                <input type="submit"/>
-                <input type="reset"/>
-            </form>
-
-            <select name="pagesize" id="pagesize"
+            <select name="pagesize" id="pagesize" className="ctrl"
                     ref={pageSizeInput} onChange={handlePageSizeInputChange}
                     defaultValue="10">
                 <option value="5">5 rows</option>
@@ -236,8 +251,6 @@ export function Grid({columns, rows, queryPageData, wires}: GridProps) {
                 <option value="50">50 rows</option>
                 <option value="100">100 rows</option>
             </select>
-
-            <SelectionWidget {...{pageData, selectionManager}}/>
         </div>
     </div>
 }

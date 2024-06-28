@@ -4,6 +4,7 @@
     font-size: 14px;
     font-family: "Helvetica Neue", Roboto, Arial, "Droid Sans", sans-serif;
     @import "grid";
+    @import "control";
 
     table {
         @import "table";

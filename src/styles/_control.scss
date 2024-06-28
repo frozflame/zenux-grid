@@ -1,0 +1,130 @@
+.page-control {
+    //outline: 1px solid red;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    button {
+        border: none;
+        cursor: pointer;
+        height: 28px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    button:disabled {
+        cursor: default;
+    }
+
+    button.current {
+        border: 1px solid #888;
+        background-color: #888;
+        color: white;
+    }
+}
+
+
+.btn-group {
+    display: block;
+    font-family: monospace;
+    font-size: 15px;
+
+    button {
+        border: 1px solid lightgray;
+        border-right: none;
+        min-width: 36px;
+    }
+
+    button:first-child {
+        border-radius: 14px 0 0 14px;
+    }
+
+    button:last-child {
+        border-radius: 0 14px 14px 0;
+        border-right: 1px solid lightgray;
+    }
+}
+
+
+.selection-control {
+    display: inline-flex;
+
+    button {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        width: 100px;
+        height: 28px;
+        padding: 0 !important;
+    }
+
+    .count {
+        cursor: default;
+    }
+
+    .mode.off {
+        color: white;
+    }
+
+    .mode.on {
+        color: green;
+    }
+}
+
+.page-num-control {
+    width: 540px;
+    display: flex;
+    margin: auto;
+
+    button {
+        width: 60px;
+        flex-grow: 0;
+    }
+
+    button:first-child {
+        width: 70px;
+        flex-grow: 0;
+    }
+
+    button:last-child {
+        width: 70px;
+        flex-grow: 0;
+    }
+
+    button.ellipsis {
+        flex-grow: 1;
+    }
+}
+
+
+.ctrl {
+    height: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.search-form {
+    margin: 0;
+    display: flex;
+
+    .ctrl {
+        border: 1px solid lightgray;
+        min-width: 36px;
+        border-right: none;
+    }
+
+    .ctrl:first-child {
+        border-radius: 14px 0 0 14px;
+    }
+
+    .ctrl:last-child {
+        border-radius: 0 14px 14px 0;
+        border-right: 1px solid lightgray;
+    }
+
+    input[type="text"] {
+        padding: 2px 28px;
+    }
+}
