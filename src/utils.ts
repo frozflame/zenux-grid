@@ -14,3 +14,9 @@ export function getVisiblePageNums(pageNum: number, pageNumTotal: number): NumOr
     }
     return nums;
 }
+
+const version = "zenux-grid 0.1.8";
+
+export function logVersion() {
+    window.console.log(version);
+}

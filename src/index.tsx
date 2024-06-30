@@ -3,7 +3,7 @@ import {Column, PageData, QueryParams, Row} from "./types";
 import {Td} from "./cells";
 import {QueryManager} from "./query";
 import {SelectionManager} from "./selection";
-import {getVisiblePageNums} from "./utils";
+import {getVisiblePageNums, logVersion} from "./utils";
 import "./styles/main.scss";
 
 export type {Column, PageData, APIPageData, QueryParams, APIQueryParams, Row} from "./types";
@@ -61,7 +61,10 @@ export function Table({columns, rows, selectionManager}: TbodyProps) {
         <thead>
         <tr>
             {
-                columns.map((column, idx) => <th key={idx}>{column.name}</th>)
+                columns.map(
+                    (column, idx) =>
+                        <th key={idx} title={column.key}>{column.name}</th>
+                )
             }
         </tr>
         </thead>
@@ -133,7 +136,7 @@ function PageSwitchWidget({queryManager}: PageSwitchWidgetProps) {
     const visiblePageNums = getVisiblePageNums(pageNum, pageNumTotal);
     const pageLinks = visiblePageNums.map((num: number | null, idx) => {
         if (!num) {
-            return <button key={idx} disabled className="ellipsis">...</button>
+            return <button key={idx} disabled className="ellipsis" onDoubleClick={logVersion}>...</button>
         }
         const current = num === pageNum;
         return <button className={current ? 'current' : ''} key={idx} disabled={current}
@@ -204,7 +207,7 @@ export function Grid({columns, rows, queryPageData, wires}: GridProps) {
             return;
         }
         event.preventDefault();
-        queryManager.changeKeyword(keywordInput.current.value);
+        queryManager.changeKeyword(keywordInput.current.value.trim());
         selectionManager.clear();
     }
 
@@ -231,8 +234,11 @@ export function Grid({columns, rows, queryPageData, wires}: GridProps) {
             <SelectionWidget {...{pageData, selectionManager}}/>
             <form action="" onSubmit={handleSubmit} onReset={handleReset} className="search-form">
                 <input className="ctrl" type="text" name="keyword" ref={keywordInput} placeholder="search..."/>
-                <input className="ctrl" type="submit"/>
+                <select name="field" id="input-field" disabled={true} className="ctrl" defaultValue="">
+                    <option value="">&#10033;</option>
+                </select>
                 <input className="ctrl" type="reset"/>
+                <input className="ctrl" type="submit"/>
             </form>
         </div>
 

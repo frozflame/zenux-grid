@@ -26,7 +26,7 @@ cellComponents['yesno'] = YesNo;
 
 
 async function getColumns(): Promise<Column[]> {
-    const response = await fetch("/test-api/x/columns");
+    const response = await fetch("/test-api/columns");
     const json = await response.json();
     return json.data;
 }
@@ -35,7 +35,7 @@ async function getColumns(): Promise<Column[]> {
 async function _getPageData(apiQueryParams: APIQueryParams): Promise<APIPageData> {
     const keyword = encodeURIComponent(apiQueryParams.keyword || "");
     const qs = `limit=${apiQueryParams.limit}&skip=${apiQueryParams.skip}&keyword=${keyword}`;
-    const url = `/test-api/x/search?${qs}`;
+    const url = `/test-api/search?${qs}`;
     const response = await fetch(url);
     const json = await response.json();
     return json.data;

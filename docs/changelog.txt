@@ -1,6 +1,14 @@
 changelog
 ---------
 
+TODO:
+ensure consistent version in package.json and logVersion()
+
+ver 0.1.8
+* set column.key to th title
+* switch submit and reset buttons
+* fix bug: pageNum does not change when keyword changes
+
 ver 0.1.7:
 * improve styling of page control buttons
 * add "Table width control" section in README.tmd

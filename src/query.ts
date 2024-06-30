@@ -49,7 +49,9 @@ export class QueryManager {
     }
 
     changeKeyword(keyword: string) {
-        const queryParams = {...this.queryParams, keyword};
+        const queryParams = {
+            ...this.queryParams, pageNum: 1, keyword,
+        };
         this.setQueryParams(queryParams);
         this.apply(queryParams).catch(console.error);
     }
@@ -59,9 +61,7 @@ export class QueryManager {
             return;
         }
         const queryParams = {
-            ...this.queryParams,
-            pageNum: 1,
-            pageSize: pageSize,
+            ...this.queryParams, pageNum: 1, pageSize,
         };
         this.setQueryParams(queryParams);
         this.apply(queryParams).catch(console.error);
