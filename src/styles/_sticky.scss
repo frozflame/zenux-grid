@@ -1,0 +1,73 @@
+// for .zenux-grid.sticky-end-columns
+
+table {
+    border-spacing: 0;
+    border-collapse: separate !important;
+    position: relative;
+    font-size: 14px;
+    font-family: "Helvetica Neue", Roboto, Arial, "Droid Sans", sans-serif;
+
+    thead th {
+        height: 50px;
+        position: sticky;
+        top: 0;
+        z-index: 99;
+    }
+
+    thead tr:hover {
+        background-color: transparent !important;
+    }
+
+    td, th {
+        border-top: none;
+        border-left: none;
+        padding: 4px;
+    }
+
+    tr:nth-child(1) td {
+        border-top: 1px solid #aaa;
+    }
+
+    td:nth-child(1) {
+        border-left: 1px solid #aaa;
+    }
+    th:nth-child(1){
+        width: 20px;
+    }
+    td.select {
+        width: 20px;
+    }
+
+    th:nth-child(1) {
+        position: sticky;
+        left: 0;
+        width: 20px;
+        z-index: 100;
+        background-color: white;
+    }
+
+    td:nth-child(1) {
+        position: sticky;
+        left: 0;
+        width: 20px;
+        z-index: 99;
+        background-color: white;
+    }
+
+    th:nth-last-child(1) {
+        position: sticky;
+        right: 0;
+        z-index: 99;
+        background-color: white;
+    }
+
+    td:nth-last-child(1) {
+        position: sticky;
+        right: 0;
+        z-index: 2;
+        background-color: white;
+        border-left: 1px solid #aaa;
+        box-shadow: inset -10px 0 8px -8px rgba(0, 0, 0, .15);
+        outline: black;
+    }
+}

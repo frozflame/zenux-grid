@@ -4,7 +4,12 @@ changelog
 TODO:
 ensure consistent version in package.json and logVersion()
 
-ver 0.1.8
+ver 0.1.9
+* Grid className attribute
+* add .sticky-end-columns styles
+* Text: always in <span>
+
+ver 0.1.8:
 * set column.key to th title
 * switch submit and reset buttons
 * fix bug: pageNum does not change when keyword changes

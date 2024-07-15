@@ -3,7 +3,7 @@ import {Column, PageData, QueryParams, Row} from "./types";
 import {Td} from "./cells";
 import {QueryManager} from "./query";
 import {SelectionManager} from "./selection";
-import {getVisiblePageNums, logVersion} from "./utils";
+import {getVisiblePageNums, joinClassNames, logVersion} from "./utils";
 import "./styles/main.scss";
 
 export type {Column, PageData, APIPageData, QueryParams, APIQueryParams, Row} from "./types";
@@ -168,13 +168,14 @@ export interface GridWires {
 
 
 export interface GridProps {
+    className?: string;
     columns: Column[];
-    rows?: Row[];
     queryPageData: (_queryParams: QueryParams) => Promise<PageData>;
+    rows?: Row[];
     wires?: GridWires;
 }
 
-export function Grid({columns, rows, queryPageData, wires}: GridProps) {
+export function Grid({columns, rows, queryPageData, wires, className}: GridProps) {
     const initialPageData: PageData = {
         rows: rows || [],
         pageNumTotal: 1
@@ -228,8 +229,7 @@ export function Grid({columns, rows, queryPageData, wires}: GridProps) {
         wires.queryManager = queryManager;
         wires.selectionManager = selectionManager;
     }
-
-    return <div className="zenux-grid">
+    return <div className={joinClassNames('zenux-grid', className)}>
         <div className="page-control">
             <SelectionWidget {...{pageData, selectionManager}}/>
             <form action="" onSubmit={handleSubmit} onReset={handleReset} className="search-form">

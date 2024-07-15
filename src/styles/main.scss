@@ -6,6 +6,10 @@
     @import "grid";
     @import "control";
 
+    &.sticky-end-columns {
+        @import "sticky";
+    }
+
     table {
         @import "table";
     }

@@ -20,7 +20,7 @@ function Text({value}: RawProps) {
         return <span>{JSON.stringify(value)}</span>
     }
     if (value.length < 24) {
-        return <>{value}</>;
+        return <span>{value}</span>;
     }
     return <span title={value}>{value.slice(0, 24)} ... </span>
 }
@@ -58,9 +58,7 @@ export interface TdProps {
 function ErrorTd({column, row}: TdProps) {
     console.log('ErrorTd, column =', column);
     console.log('ErrorTd, row =', row);
-    return <td className="error">
-        {JSON.stringify(column)}
-    </td>
+    return <td className="error">{JSON.stringify(column)}</td>
 }
 
 export function Td({column, row}: TdProps) {
