@@ -29,7 +29,7 @@ module.exports = {
      * for browser (client side). Default is "web"
      */
     target: "web",
-    devtool : "source-map",
+    devtool: "source-map",
     devServer: {
         /** "port"
          * port of dev server
@@ -54,9 +54,12 @@ module.exports = {
          * disable live reload on the browser. "hot" must be set to false for this to work
          */
         liveReload: true,
-        proxy: {
-            '/api': 'http://127.0.0.1:5005',
-        },
+        proxy: [
+            {
+                context: ["/api"],
+                target: 'http://127.0.0.1:5005'
+            }
+        ]
     },
     resolve: {
         /** "extensions"
@@ -106,4 +109,4 @@ module.exports = {
         maxEntrypointSize: 512000,
         maxAssetSize: 512000
     }
-}
+};

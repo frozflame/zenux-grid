@@ -4,6 +4,10 @@ changelog
 TODO:
 ensure consistent version in package.json and logVersion()
 
+ver 0.2.0
+* GridProps: remove className and rows, add options
+* SearchForm, SelectionWidget, PageSwitchWidget, PageSizeWidget in separate files in components/
+
 ver 0.1.9
 * Grid className attribute
 * add .sticky-end-columns styles

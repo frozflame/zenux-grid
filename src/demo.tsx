@@ -1,5 +1,5 @@
 import React from 'react';
-import {Grid, GridWires} from "./index";
+import {Grid, GridOptions, GridWires} from "./index";
 import ReactDOM from "react-dom/client";
 
 import {
@@ -58,9 +58,30 @@ interface DemoProps {
 
 function Demo({columns}: DemoProps) {
     window.zenuxGridWires = {};
+    const options1: GridOptions = {
+        initialQueryParams: {
+            keyword: '',
+            pageNum: 1,
+            pageSize: 20,
+        },
+        withSearchForm: true,
+        withSelectionButtons: true,
+        withStickyEndColumns: false,
+    }
+    const options2: GridOptions = {
+        withSearchForm: true,
+        withSelectionButtons: true,
+        withStickyEndColumns: true,
+    }
+    const options3: GridOptions = {
+        withSearchForm: false,
+        withSelectionButtons: false,
+        withStickyEndColumns: true,
+    }
     return <div>
-        <Grid queryPageData={queryPageData} columns={columns} wires={window.zenuxGridWires}/>
-        <Grid queryPageData={queryPageData} columns={columns} className="sticky-end-columns"/>
+        <Grid columns={columns} options={options1} queryPageData={queryPageData} wires={window.zenuxGridWires}/>
+        <Grid columns={columns} options={options2} queryPageData={queryPageData}/>
+        <Grid columns={columns} options={options3} queryPageData={queryPageData}/>
     </div>
 }
 

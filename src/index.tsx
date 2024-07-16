@@ -1,10 +1,14 @@
-import React, {ChangeEvent, FormEvent, useEffect, useRef, useState} from "react";
+import React, {FormEvent, useEffect, useRef, useState} from "react";
 import {Column, PageData, QueryParams, Row} from "./types";
 import {Td} from "./cells";
 import {QueryManager} from "./query";
 import {SelectionManager} from "./selection";
-import {getVisiblePageNums, joinClassNames, logVersion} from "./utils";
+import {joinClassNames} from "./utils";
+import {SearchForm} from "./components/search";
 import "./styles/main.scss";
+import {SelectionWidget} from "./components/selection";
+import {PageSwitchWidget} from "./components/pageswitch";
+import {PageSizeWidget} from "./components/pagesize";
 
 export type {Column, PageData, APIPageData, QueryParams, APIQueryParams, Row} from "./types";
 export {translateQueryParams, untranslatePageData} from "./types";
@@ -73,124 +77,39 @@ export function Table({columns, rows, selectionManager}: TbodyProps) {
 }
 
 
-export interface SelectionWidgetProps {
-    pageData: PageData;
-    selectionManager: SelectionManager;
-}
-
-function SelectionWidget({pageData, selectionManager}: SelectionWidgetProps) {
-    function selectAll() {
-        selectionManager.add(pageData.rows.map(row => row.id));
-    }
-
-    function deselectAll() {
-        selectionManager.remove(pageData.rows.map(row => row.id));
-    }
-
-    function logSelected(event: React.MouseEvent) {
-        event.preventDefault();
-        console.log('selected ids:', selectionManager.selection, selectionManager.selection.size);
-    }
-
-    function getFullSelectionStatus() {
-        return pageData.rows.every((row: Row) => selectionManager.selection.has(row.id));
-    }
-
-    function handleSelectableChange(event: ChangeEvent<HTMLInputElement>) {
-        selectionManager.setSelectable(event.target.checked);
-    }
-
-    function handleModeButtonClick() {
-        selectionManager.setSelectable(!selectionManager.selectable);
-    }
-
-    const count: number = selectionManager.selection.size;
-    return <>
-        <div className="btn-group selection-control">
-            <button onClick={selectAll} className="select-all"
-                    disabled={!selectionManager.selectable || getFullSelectionStatus()}>Select All
-            </button>
-            <button onClick={logSelected} className="count"
-                    disabled={!count}>{count}</button>
-            <button onClick={deselectAll} className="deselect-all"
-                    disabled={!selectionManager.selectable || !count}>Deselect All
-            </button>
-            <button
-                className={selectionManager.selectable ? "mode on" : "mode off"}
-                onClick={handleModeButtonClick}>✓
-            </button>
-        </div>
-
-    </>
-}
-
-
-interface PageSwitchWidgetProps {
-    queryManager: QueryManager;
-}
-
-function PageSwitchWidget({queryManager}: PageSwitchWidgetProps) {
-    const pageNum = queryManager.queryParams.pageNum;
-    const pageNumTotal = queryManager.pageData.pageNumTotal;
-
-    const visiblePageNums = getVisiblePageNums(pageNum, pageNumTotal);
-    const pageLinks = visiblePageNums.map((num: number | null, idx) => {
-        if (!num) {
-            return <button key={idx} disabled className="ellipsis" onDoubleClick={logVersion}>...</button>
-        }
-        const current = num === pageNum;
-        return <button className={current ? 'current' : ''} key={idx} disabled={current}
-                       onClick={() => queryManager.changePageNum(num)}>{num}</button>
-    });
-
-    function prevPage() {
-        queryManager.prevPage();
-    }
-
-    function nextPage() {
-        queryManager.nextPage();
-    }
-
-    return <>
-        <div className="btn-group page-num-control">
-            <button onClick={prevPage} disabled={pageNum === 1}>Prev</button>
-            {pageLinks}
-            <button onClick={nextPage} disabled={pageNum === pageNumTotal}>Next</button>
-        </div>
-    </>
-}
-
-
 export interface GridWires {
     selectionManager?: SelectionManager;
     queryManager?: QueryManager;
 }
 
+export interface GridOptions {
+    initialPageData?: PageData;
+    initialQueryParams?: QueryParams;
+    withSearchForm?: boolean;
+    withStickyEndColumns?: boolean;
+    withSelectionButtons?: boolean;
+}
+
 
 export interface GridProps {
-    className?: string;
     columns: Column[];
+    options: GridOptions;
     queryPageData: (_queryParams: QueryParams) => Promise<PageData>;
-    rows?: Row[];
     wires?: GridWires;
 }
 
-export function Grid({columns, rows, queryPageData, wires, className}: GridProps) {
-    const initialPageData: PageData = {
-        rows: rows || [],
-        pageNumTotal: 1
+export function Grid({columns, options, queryPageData, wires}: GridProps) {
+    const initialPageData: PageData = options.initialPageData || {
+        rows: [], pageNumTotal: 1,
     }
-    const initialQueryParams: QueryParams = {
-        pageNum: 1,
-        pageSize: 10,
-        keyword: "",
-    }
+    const initialQueryParams: QueryParams = options.initialQueryParams || {
+        pageNum: 1, pageSize: 10, keyword: "",
+    };
     const [pageData, setPageData] = useState<PageData>(initialPageData);
     const [queryParams, setQueryParams] = useState<QueryParams>(initialQueryParams);
     const [selection, setSelection] = useState<Set<string>>(new Set());
     const [selectable, setSelectable] = useState(false);
     const selectionManager = new SelectionManager(selection, setSelection, selectable, setSelectable);
-    const keywordInput = useRef<HTMLInputElement>(null);
     const pageSizeInput = useRef<HTMLSelectElement>(null);
     const queryManager = new QueryManager(pageData, setPageData, queryParams, setQueryParams, queryPageData);
 
@@ -199,22 +118,9 @@ export function Grid({columns, rows, queryPageData, wires, className}: GridProps
         queryManager.apply(initialQueryParams).catch(console.error);
     }, []);
 
+    // TODO: better loading UI
     if (!pageData) {
         return <div>Loading ... (react)</div>
-    }
-
-    function handleSubmit(event: FormEvent) {
-        if (!keywordInput.current) {
-            return;
-        }
-        event.preventDefault();
-        queryManager.changeKeyword(keywordInput.current.value.trim());
-        selectionManager.clear();
-    }
-
-    function handleReset(event: FormEvent) {
-        queryManager.changeKeyword("");
-        selectionManager.clear();
     }
 
     function handlePageSizeInputChange(event: FormEvent) {
@@ -229,17 +135,24 @@ export function Grid({columns, rows, queryPageData, wires, className}: GridProps
         wires.queryManager = queryManager;
         wires.selectionManager = selectionManager;
     }
-    return <div className={joinClassNames('zenux-grid', className)}>
+    let className = 'zenux-grid';
+    if (options.withStickyEndColumns) {
+        className = joinClassNames(className, 'sticky-end-columns')!;
+    }
+    return <div className={className}>
         <div className="page-control">
-            <SelectionWidget {...{pageData, selectionManager}}/>
-            <form action="" onSubmit={handleSubmit} onReset={handleReset} className="search-form">
-                <input className="ctrl" type="text" name="keyword" ref={keywordInput} placeholder="search..."/>
-                <select name="field" id="input-field" disabled={true} className="ctrl" defaultValue="">
-                    <option value="">&#10033;</option>
-                </select>
-                <input className="ctrl" type="reset"/>
-                <input className="ctrl" type="submit"/>
-            </form>
+
+            {
+                options.withSelectionButtons ?
+                    <SelectionWidget {...{pageData, selectionManager}}/>
+                    : <></>
+            }
+
+            {
+                options.withSearchForm ?
+                    <SearchForm queryManager={queryManager} selectionManager={selectionManager}/>
+                    : <></>
+            }
         </div>
 
         <div className="table">
@@ -248,15 +161,7 @@ export function Grid({columns, rows, queryPageData, wires, className}: GridProps
         <div className="page-control">
             <div className="ctrl">Page {queryParams.pageNum} of {pageData.pageNumTotal}</div>
             <PageSwitchWidget queryManager={queryManager}/>
-            <select name="pagesize" id="pagesize" className="ctrl"
-                    ref={pageSizeInput} onChange={handlePageSizeInputChange}
-                    defaultValue="10">
-                <option value="5">5 rows</option>
-                <option value="10">10 rows</option>
-                <option value="20">20 rows</option>
-                <option value="50">50 rows</option>
-                <option value="100">100 rows</option>
-            </select>
+            <PageSizeWidget queryManager={queryManager}/>
         </div>
     </div>
 }
