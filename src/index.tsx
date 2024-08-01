@@ -5,16 +5,15 @@ import {QueryManager} from "./query";
 import {SelectionManager} from "./selection";
 import {joinClassNames} from "./utils";
 import {SearchForm} from "./components/search";
-import "./styles/main.scss";
 import {SelectionWidget} from "./components/selection";
 import {PageSwitchWidget} from "./components/pageswitch";
 import {PageSizeWidget} from "./components/pagesize";
-
 export type {Column, PageData, APIPageData, QueryParams, APIQueryParams, Row} from "./types";
 export {translateQueryParams, untranslatePageData} from "./types";
 export type {RawProps, LinkProps, Td} from "./cells";
 export {cellComponents} from "./cells";
 
+import "./styles/main.scss";
 
 interface TrProps {
     columns: Column[];
@@ -85,6 +84,7 @@ export interface GridWires {
 export interface GridOptions {
     initialPageData?: PageData;
     initialQueryParams?: QueryParams;
+    withPageWidgets?: boolean;
     withSearchForm?: boolean;
     withStickyEndColumns?: boolean;
     withSelectionButtons?: boolean;
@@ -158,10 +158,14 @@ export function Grid({columns, options, queryPageData, wires}: GridProps) {
         <div className="table">
             <Table columns={columns} rows={pageData.rows} selectionManager={selectionManager}/>
         </div>
-        <div className="page-control">
-            <div className="ctrl">Page {queryParams.pageNum} of {pageData.pageNumTotal}</div>
-            <PageSwitchWidget queryManager={queryManager}/>
-            <PageSizeWidget queryManager={queryManager}/>
-        </div>
+        {
+            options.withPageWidgets ?
+                <div className="page-control">
+                    <div className="ctrl">Page {queryParams.pageNum} of {pageData.pageNumTotal}</div>
+                    <PageSwitchWidget queryManager={queryManager}/>
+                    <PageSizeWidget queryManager={queryManager}/>
+                </div>
+                : <></>
+        }
     </div>
 }

@@ -4,6 +4,10 @@ changelog
 TODO:
 ensure consistent version in package.json and logVersion()
 
+ver 0.2.1
+* z-index 90
+* new option withPageWidgets
+
 ver 0.2.0
 * GridProps: remove className and rows, add options
 * SearchForm, SelectionWidget, PageSwitchWidget, PageSizeWidget in separate files in components/

@@ -11,7 +11,7 @@ table {
         height: 50px;
         position: sticky;
         top: 0;
-        z-index: 99;
+        z-index: 90;
     }
 
     thead tr:hover {
@@ -42,7 +42,7 @@ table {
         position: sticky;
         left: 0;
         width: 20px;
-        z-index: 100;
+        z-index: 91;
         background-color: white;
     }
 
@@ -50,14 +50,14 @@ table {
         position: sticky;
         left: 0;
         width: 20px;
-        z-index: 99;
+        z-index: 90;
         background-color: white;
     }
 
     th:nth-last-child(1) {
         position: sticky;
         right: 0;
-        z-index: 99;
+        z-index: 90;
         background-color: white;
     }
 
