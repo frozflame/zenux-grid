@@ -1,6 +1,6 @@
 {
     "name": "zenux-grid",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "description": "yet another data grid react component",
     "author": "frozflame",
     "main": "dist/cjs/index.js",
@@ -71,9 +71,7 @@
         "r": "rollup -c --bundleConfigAsCjs",
         "build": "rollup -c --bundleConfigAsCjs",
         "bundle": "rollup -c --bundleConfigAsCjs",
-        "dist": "rollup -c --bundleConfigAsCjs; npm pack; mv -f zenux-grid-0.*.*.tgz /data/setup/js",
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "live": "npx live-server --port=5123 --entry-file=index.html public"
+        "dist": "rollup -c --bundleConfigAsCjs; npm pack; mv -f zenux-grid-0.*.*.tgz /data/setup/js"
     },
     "eslintConfig": {}
 }
