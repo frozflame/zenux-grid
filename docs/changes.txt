@@ -1,9 +1,11 @@
 changelog
 ---------
 
-TODO:
-ensure consistent version in package.json and logVersion()
-
+ver 0.3.0
+* drop global cell component registry
+* Grid or SimpleGrid accept arg ccm:CellComponentMap as cell component registry
+* a cell component now takes {column, row} as arg (not bare value any more)
+* remove utils.logVersion()
 
 ver 0.2.2
 * add SimpleGrid

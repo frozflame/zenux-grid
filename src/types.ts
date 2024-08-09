@@ -1,3 +1,5 @@
+import React from "react";
+
 export interface Column {
     key?: string;
     name: string;
@@ -8,6 +10,23 @@ export interface Row {
     id: string;
     item: any;
 }
+
+
+export interface CellProps {
+    column: Column;
+    row: Row;
+}
+
+export type CellComponent = (props: CellProps) => React.JSX.Element;
+export type CellComponentMap = Record<string, CellComponent>;
+
+
+export interface TdProps {
+    ccm: CellComponentMap;
+    column: Column;
+    row: Row;
+}
+
 
 export interface APIPageData {
     items: any[];
@@ -30,6 +49,7 @@ export interface QueryParams {
     pageSize: number;
     keyword: string;
 }
+
 
 export function translateQueryParams(queryParams: QueryParams): APIQueryParams {
     return {

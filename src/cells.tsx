@@ -1,21 +1,14 @@
-import React, {createElement} from "react";
-import {Column, Row} from "./types";
+import React from "react";
+import {CellComponentMap, CellProps} from "./types";
 
 
-export interface RawProps {
-    value: any;
-}
-
-export interface LinkProps {
-    text: string;
-    href: string;
-}
-
-function Num({value}: RawProps) {
+function Num({column, row}: CellProps) {
+    const value = row.item[column.key!];
     return <span className="num">{value}</span>
 }
 
-function Text({value}: RawProps) {
+function Text({column, row}: CellProps) {
+    const value = row.item[column.key!];
     if (typeof value !== "string") {
         return <span>{JSON.stringify(value)}</span>
     }
@@ -26,53 +19,36 @@ function Text({value}: RawProps) {
 }
 
 
-function Code({value}: RawProps) {
+function Code({column, row}: CellProps) {
+    const value = row.item[column.key!];
     return <span className="code">{value}</span>
 }
 
-function Link(props: LinkProps) {
-    return <a href={props.href} target="_blank">{props.text}</a>
+export interface LinkDict {
+    text: string;
+    href: string;
+}
+
+function Link({column, row}: CellProps) {
+    const value = row.item[column.key!] as LinkDict;
+    return <a href={value.href} target="_blank">{value.text}</a>
 }
 
 
-export const cellComponents: Record<string, ((props: any) => React.JSX.Element)> = {
+function Labels({column, row}: CellProps) {
+    const labels: string[] = row.item[column.key!];
+    const elements = labels.map((label, idx) => {
+        return <span style={{margin: '4px'}} key={idx}>{label}</span>
+    })
+    return <div>{elements}</div>
+}
+
+
+export const defaultCellComponentMap: CellComponentMap = {
     "num": Num,
     "code": Code,
     "text": Text,
     "date": Text,
     "link": Link,
-}
-
-
-export function getCellComponent(type: string): (props: any) => React.JSX.Element {
-    type = type || "text";
-    return cellComponents[type];
-}
-
-export interface TdProps {
-    column: Column;
-    row: Row;
-}
-
-
-function ErrorTd({column, row}: TdProps) {
-    console.log('ErrorTd, column =', column);
-    console.log('ErrorTd, row =', row);
-    return <td className="error">{JSON.stringify(column)}</td>
-}
-
-export function Td({column, row}: TdProps) {
-    if (!column.key) {
-        return <td className={column.type}></td>
-    }
-    const fc = getCellComponent(column.type);
-    if (!fc) {
-        return <ErrorTd column={column} row={row}/>
-    }
-    let cellProps = row.item[column.key];
-    if (typeof cellProps !== "object" || Array.isArray(cellProps) || cellProps === null) {
-        cellProps = {value: cellProps}
-    }
-    const child = createElement(fc, cellProps);
-    return <td className={column.type}>{child}</td>
+    "labels": Labels,
 }

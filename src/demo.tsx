@@ -5,24 +5,61 @@ import ReactDOM from "react-dom/client";
 import {
     APIPageData,
     APIQueryParams,
+    CellProps,
     Column,
     PageData,
     QueryParams,
     translateQueryParams,
     untranslatePageData
 } from "./types";
-import {cellComponents, RawProps} from "./cells";
+import {defaultCellComponentMap} from "./cells";
 import {SimpleGrid} from "./simple";
 
 
-function YesNo({value}: RawProps) {
+function YesNo({column, row}: CellProps) {
+    const value = row.item[column.key!];
     const status = value ? "success" : "failure";
     const text = value ? "Yes" : "No";
     return <span className={`status ${status}`}>{text}</span>
 }
 
+interface Action {
+    name: string;
+    params: any;
+    label: string;
+    title: string;
+    zone: string;
+}
 
-cellComponents['yesno'] = YesNo;
+
+type ActionButtonProps = Action;
+
+
+function ActionButton(props: ActionButtonProps) {
+    function handleClick(event: React.MouseEvent) {
+        event.preventDefault();
+        console.log(props);
+    }
+
+    return <a href="#" style={{margin: '4px'}} onClick={handleClick}>{props.label || props.title}</a>
+}
+
+
+function Actions({column, row}: CellProps) {
+    const actions: any[] = row.item[column.key!];
+    const elements = actions.map(
+        (action, idx) =>
+            <ActionButton {...action}/>
+    )
+    return <div>{elements}</div>
+}
+
+
+const cellComponentMap = {
+    ...defaultCellComponentMap,
+    actions: Actions,
+    yesno: YesNo,
+};
 
 
 async function getColumns(): Promise<Column[]> {
@@ -88,17 +125,24 @@ function Demo({columns}: DemoProps) {
     }, []);
     return <div>
         <h1>Grid 1:</h1>
-        <Grid columns={columns} options={options1} queryPageData={queryPageData} wires={window.zenuxGridWires}/>
+        <Grid ccm={cellComponentMap} columns={columns}
+              options={options1} queryPageData={queryPageData}
+              wires={window.zenuxGridWires}/>
 
         <h1>Grid 2:</h1>
-        <Grid columns={columns} options={options2} queryPageData={queryPageData}/>
+        <Grid ccm={cellComponentMap} columns={columns}
+              options={options2} queryPageData={queryPageData}/>
 
         <h1>Grid 3:</h1>
-        <Grid columns={columns} options={options3} queryPageData={queryPageData}/>
+        <Grid ccm={cellComponentMap} columns={columns}
+              options={options3} queryPageData={queryPageData}/>
 
         <h1>SimpleGrid:</h1>
         {
-            pageData ? <SimpleGrid columns={columns} options={options3} pageData={pageData}/> : <></>
+            pageData
+                ? <SimpleGrid ccm={cellComponentMap} columns={columns}
+                              options={options3} pageData={pageData}/>
+                : <></>
         }
     </div>
 }

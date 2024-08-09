@@ -1,23 +1,46 @@
-import React from "react";
+import React, {createElement} from "react";
 import {SelectionManager} from "./selection";
-import {Column, Row} from "./types";
-import {Td} from "./cells";
+import {CellComponentMap, CellProps, Column, Row, TdProps} from "./types";
+
+
+function ErrorTd({column, row}: CellProps) {
+    console.log('ErrorTd, column =', column);
+    console.log('ErrorTd, row =', row);
+    return <td className="error">{JSON.stringify(column)}</td>
+}
+
+export function Td({ccm, column, row}: TdProps) {
+    if (!column.key) {
+        return <td className={column.type}></td>
+    }
+
+    const fc = ccm[column.type];
+    if (!fc) {
+        return <ErrorTd column={column} row={row}/>
+    }
+    const child = createElement(fc, {column, row});
+    return <td className={column.type}>{child}</td>
+}
+
 
 export interface TrProps {
+    ccm: CellComponentMap;
     columns: Column[];
     row: Row;
     selectionManager: SelectionManager;
 }
 
 export interface TbodyProps {
+    ccm: CellComponentMap;
     columns: Column[];
     rows: Row[];
     selectionManager: SelectionManager;
 }
 
-export function Tr({columns, row, selectionManager}: TrProps) {
+export function Tr({ccm, columns, row, selectionManager}: TrProps) {
     const tds = columns.map(
-        (column, idx) => <Td key={idx} column={column} row={row}/>
+        (column, idx) =>
+            <Td key={idx} ccm={ccm} column={column} row={row}/>
     );
 
     function _select() {
@@ -35,14 +58,15 @@ export function Tr({columns, row, selectionManager}: TrProps) {
     }
 }
 
-export function Tbody({columns, rows, selectionManager}: TbodyProps) {
+export function Tbody({ccm, columns, rows, selectionManager}: TbodyProps) {
     const trs = rows.map(
-        (row, idx) => <Tr key={idx} columns={columns} row={row} selectionManager={selectionManager}/>
+        (row, idx) =>
+            <Tr key={idx} ccm={ccm} columns={columns} row={row} selectionManager={selectionManager}/>
     );
     return <tbody>{trs}</tbody>
 }
 
-export function Table({columns, rows, selectionManager}: TbodyProps) {
+export function Table({ccm, columns, rows, selectionManager}: TbodyProps) {
     if (!rows.length) {
         return <div>No result found.</div>
     }
@@ -57,6 +81,6 @@ export function Table({columns, rows, selectionManager}: TbodyProps) {
             }
         </tr>
         </thead>
-        <Tbody columns={columns} rows={rows} selectionManager={selectionManager}/>
+        <Tbody ccm={ccm} columns={columns} rows={rows} selectionManager={selectionManager}/>
     </table>
 }

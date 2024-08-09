@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Column, PageData, QueryParams} from "./types";
+import {CellComponentMap, Column, PageData, QueryParams} from "./types";
 import {QueryManager} from "./query";
 import {SelectionManager} from "./selection";
 import {joinClassNames} from "./utils";
@@ -8,11 +8,12 @@ import {SelectionWidget} from "./components/selection";
 import {PageSwitchWidget} from "./components/pageswitch";
 import {PageSizeWidget} from "./components/pagesize";
 import {Table} from "./table";
+import {defaultCellComponentMap} from "./cells";
 
 export type {Column, PageData, APIPageData, QueryParams, APIQueryParams, Row} from "./types";
 export {translateQueryParams, untranslatePageData} from "./types";
-export type {RawProps, LinkProps, Td} from "./cells";
-export {cellComponents} from "./cells";
+export type {Td} from "./table";
+export {defaultCellComponentMap} from "./cells";
 
 
 export interface GridWires {
@@ -31,13 +32,14 @@ export interface GridOptions {
 
 
 export interface GridProps {
+    ccm?: CellComponentMap;
     columns: Column[];
     options: GridOptions;
     queryPageData: (_queryParams: QueryParams) => Promise<PageData>;
     wires?: GridWires;
 }
 
-export function Grid({columns, options, queryPageData, wires}: GridProps) {
+export function Grid({ccm, columns, options, queryPageData, wires}: GridProps) {
     const initialPageData: PageData = options.initialPageData || {
         rows: [], pageNumTotal: 1,
     }
@@ -86,7 +88,9 @@ export function Grid({columns, options, queryPageData, wires}: GridProps) {
         </div>
 
         <div className="table">
-            <Table columns={columns} rows={pageData.rows} selectionManager={selectionManager}/>
+            <Table ccm={ccm || defaultCellComponentMap}
+                   columns={columns} rows={pageData.rows}
+                   selectionManager={selectionManager}/>
         </div>
         {
             options.withPageWidgets ?

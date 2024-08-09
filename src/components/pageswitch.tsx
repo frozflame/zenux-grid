@@ -1,10 +1,16 @@
 import {QueryManager} from "../query";
-import {getVisiblePageNums, logVersion} from "../utils";
+import {getVisiblePageNums} from "../utils";
 import React from "react";
 
 export interface PageSwitchWidgetProps {
     queryManager: QueryManager;
 }
+
+
+function logInfo() {
+    console.log('zenux-grid')
+}
+
 
 export function PageSwitchWidget({queryManager}: PageSwitchWidgetProps) {
     const pageNum = queryManager.queryParams.pageNum;
@@ -16,7 +22,7 @@ export function PageSwitchWidget({queryManager}: PageSwitchWidgetProps) {
     const visiblePageNums = getVisiblePageNums(pageNum, pageNumTotal);
     const pageLinks = visiblePageNums.map((num: number | null, idx) => {
         if (!num) {
-            return <button key={idx} disabled className="ellipsis" onDoubleClick={logVersion}>...</button>
+            return <button key={idx} disabled className="ellipsis" onDoubleClick={logInfo}>...</button>
         }
         const current = num === pageNum;
         return <button className={current ? 'current' : ''} key={idx} disabled={current}
