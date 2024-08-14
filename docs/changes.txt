@@ -1,6 +1,9 @@
 changelog
 ---------
 
+ver 0.3.2
+* use row.id as Tr.key
+
 ver 0.3.1
 * fix exports: defaultCellComponentMap, Td
 

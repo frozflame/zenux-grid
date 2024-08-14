@@ -59,10 +59,10 @@ export function translateQueryParams(queryParams: QueryParams): APIQueryParams {
     }
 }
 
-export function untranslatePageData(apiPageData: APIPageData, pageSize: number): PageData {
+export function untranslatePageData(apiPageData: APIPageData, pageSize: number, primaryKey = '_id'): PageData {
     const rows = apiPageData.items.map((item: any) => {
         return {
-            id: item._id,
+            id: item[primaryKey],
             item: item,
         }
     });

@@ -60,8 +60,8 @@ export function Tr({ccm, columns, row, selectionManager}: TrProps) {
 
 export function Tbody({ccm, columns, rows, selectionManager}: TbodyProps) {
     const trs = rows.map(
-        (row, idx) =>
-            <Tr key={idx} ccm={ccm} columns={columns} row={row} selectionManager={selectionManager}/>
+        (row) =>
+            <Tr key={row.id} ccm={ccm} columns={columns} row={row} selectionManager={selectionManager}/>
     );
     return <tbody>{trs}</tbody>
 }
