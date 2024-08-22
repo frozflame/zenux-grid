@@ -1,6 +1,10 @@
 changelog
 ---------
 
+ver 0.3.3
+* fix :hover backgournd color of tables withStickyEndColumns=true
+* add YesNo to defaultCellComponentMap
+
 ver 0.3.2
 * use row.id as Tr.key
 

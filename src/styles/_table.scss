@@ -1,3 +1,5 @@
+@import "colors";
+
 th, td {
     white-space: nowrap;
 }
@@ -13,11 +15,11 @@ td.select::before {
 }
 
 tr:hover {
-    background-color: #d0d0d0;
+    background-color: $color-bg-hover;
 }
 
 tr.selected {
-    background-color: #e1e1e1;
+    background-color: $color-bg-selected;
 
     td.select::before {
         color: green;

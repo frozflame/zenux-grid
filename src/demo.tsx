@@ -16,13 +16,6 @@ import {defaultCellComponentMap} from "./cells";
 import {SimpleGrid} from "./simple";
 
 
-function YesNo({column, row}: CellProps) {
-    const value = row.item[column.key!];
-    const status = value ? "success" : "failure";
-    const text = value ? "Yes" : "No";
-    return <span className={`status ${status}`}>{text}</span>
-}
-
 interface Action {
     name: string;
     params: any;
@@ -58,7 +51,6 @@ function Actions({column, row}: CellProps) {
 const cellComponentMap = {
     ...defaultCellComponentMap,
     actions: Actions,
-    yesno: YesNo,
 };
 
 

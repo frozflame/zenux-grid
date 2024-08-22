@@ -1,5 +1,7 @@
 // for .zenux-grid.sticky-end-columns
 
+@import "colors";
+
 table {
     border-spacing: 0;
     border-collapse: separate !important;
@@ -31,9 +33,11 @@ table {
     td:nth-child(1) {
         border-left: 1px solid #aaa;
     }
-    th:nth-child(1){
+
+    th:nth-child(1) {
         width: 20px;
     }
+
     td.select {
         width: 20px;
     }
@@ -69,5 +73,14 @@ table {
         border-left: 1px solid #aaa;
         box-shadow: inset -10px 0 8px -8px rgba(0, 0, 0, .15);
         outline: black;
+    }
+
+    tr:hover {
+        td:nth-child(1) {
+            background-color: $color-bg-hover;
+        }
+        td:nth-last-child(1) {
+            background-color: $color-bg-hover;
+        }
     }
 }

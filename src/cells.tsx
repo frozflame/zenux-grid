@@ -44,6 +44,14 @@ function Labels({column, row}: CellProps) {
 }
 
 
+function YesNo({column, row}: CellProps) {
+    const value = row.item[column.key!];
+    const status = value ? "success" : "failure";
+    const text = value ? "Yes" : "No";
+    return <span className={`status ${status}`}>{text}</span>
+}
+
+
 export const defaultCellComponentMap: CellComponentMap = {
     "num": Num,
     "code": Code,
@@ -51,4 +59,5 @@ export const defaultCellComponentMap: CellComponentMap = {
     "date": Text,
     "link": Link,
     "labels": Labels,
+    "yesno": YesNo,
 }

@@ -1,6 +1,6 @@
 {
     "name": "zenux-grid",
-    "version": "0.3.2",
+    "version": "0.3.3",
     "description": "yet another data grid react component",
     "author": "frozflame",
     "main": "dist/cjs/index.js",
