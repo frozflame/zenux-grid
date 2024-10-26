@@ -1,6 +1,9 @@
 changelog
 ---------
 
+ver 0.3.5
+* add PageNumWidget
+
 ver 0.3.4
 * SearchForm keywordFields
 * fmt with prettier

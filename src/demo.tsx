@@ -1,6 +1,6 @@
 import "./styles/main.scss";
-import React, {useEffect, useState} from 'react';
-import {Grid, GridOptions, GridWires} from "./grid";
+import React, { useEffect, useState } from "react";
+import { Grid, GridOptions, GridWires } from "./grid";
 import ReactDOM from "react-dom/client";
 import {
     APIPageData,
@@ -10,11 +10,10 @@ import {
     PageData,
     QueryParams,
     translateQueryParams,
-    untranslatePageData
+    untranslatePageData,
 } from "./types";
-import {defaultCellComponentMap} from "./cells";
-import {SimpleGrid} from "./simple";
-
+import { defaultCellComponentMap } from "./cells";
+import { SimpleGrid } from "./simple";
 
 interface Action {
     name: string;
@@ -24,9 +23,7 @@ interface Action {
     zone: string;
 }
 
-
 type ActionButtonProps = Action;
-
 
 function ActionButton(props: ActionButtonProps) {
     function handleClick(event: React.MouseEvent) {
@@ -34,25 +31,23 @@ function ActionButton(props: ActionButtonProps) {
         console.log(props);
     }
 
-    return <a href="#" style={{margin: '4px'}} onClick={handleClick}>{props.label || props.title}</a>
+    return (
+        <a href="#" style={{ margin: "4px" }} onClick={handleClick}>
+            {props.label || props.title}
+        </a>
+    );
 }
 
-
-function Actions({column, row}: CellProps) {
+function Actions({ column, row }: CellProps) {
     const actions: any[] = row.item[column.key!];
-    const elements = actions.map(
-        (action, idx) =>
-            <ActionButton {...action}/>
-    )
-    return <div>{elements}</div>
+    const elements = actions.map((action, idx) => <ActionButton {...action} />);
+    return <div>{elements}</div>;
 }
-
 
 const cellComponentMap = {
     ...defaultCellComponentMap,
     actions: Actions,
 };
-
 
 async function getColumns(): Promise<Column[]> {
     const response = await fetch("/api/columns");
@@ -60,8 +55,9 @@ async function getColumns(): Promise<Column[]> {
     return json.data;
 }
 
-
-async function _getPageData(apiQueryParams: APIQueryParams): Promise<APIPageData> {
+async function _getPageData(
+    apiQueryParams: APIQueryParams,
+): Promise<APIPageData> {
     const keyword = encodeURIComponent(apiQueryParams.keyword || "");
     const qs = `limit=${apiQueryParams.limit}&skip=${apiQueryParams.skip}&keyword=${keyword}`;
     const url = `/api/search?${qs}`;
@@ -85,64 +81,85 @@ interface DemoProps {
     columns: Column[];
 }
 
-function Demo({columns}: DemoProps) {
+function Demo({ columns }: DemoProps) {
     window.zenuxGridWires = {};
     const options1: GridOptions = {
         initialQueryParams: {
-            keyword: '',
+            keyword: "",
             pageNum: 1,
             pageSize: 20,
         },
         withSearchForm: true,
         withSelectionButtons: true,
         withStickyEndColumns: false,
-    }
+    };
     const options2: GridOptions = {
+        withPageWidgets: true,
         withSearchForm: true,
         withSelectionButtons: true,
         withStickyEndColumns: true,
-    }
+    };
     const options3: GridOptions = {
         withSearchForm: false,
         withSelectionButtons: false,
         withStickyEndColumns: true,
-    }
+    };
 
     const [pageData, setPageData] = useState<PageData>();
     useEffect(() => {
-        queryPageData({pageNum: 1, pageSize: 10, keyword: ''}).then((_pageData) => {
-            setPageData(_pageData);
-        });
-
+        queryPageData({ pageNum: 1, pageSize: 10, keyword: "" }).then(
+            (_pageData) => {
+                setPageData(_pageData);
+            },
+        );
     }, []);
-    return <div>
-        <h1>Grid 1:</h1>
-        <Grid ccm={cellComponentMap} columns={columns}
-              options={options1} queryPageData={queryPageData}
-              wires={window.zenuxGridWires}/>
+    return (
+        <div>
+            <h1>Grid 1:</h1>
+            <Grid
+                ccm={cellComponentMap}
+                columns={columns}
+                options={options1}
+                queryPageData={queryPageData}
+                wires={window.zenuxGridWires}
+            />
 
-        <h1>Grid 2:</h1>
-        <Grid ccm={cellComponentMap} columns={columns}
-              options={options2} queryPageData={queryPageData}/>
+            <h1>Grid 2:</h1>
+            <Grid
+                ccm={cellComponentMap}
+                columns={columns}
+                options={options2}
+                queryPageData={queryPageData}
+            />
 
-        <h1>Grid 3:</h1>
-        <Grid ccm={cellComponentMap} columns={columns}
-              options={options3} queryPageData={queryPageData}/>
+            <h1>Grid 3:</h1>
+            <Grid
+                ccm={cellComponentMap}
+                columns={columns}
+                options={options3}
+                queryPageData={queryPageData}
+            />
 
-        <h1>SimpleGrid:</h1>
-        {
-            pageData
-                ? <SimpleGrid ccm={cellComponentMap} columns={columns}
-                              options={options3} pageData={pageData}/>
-                : <></>
-        }
-    </div>
+            <h1>SimpleGrid:</h1>
+            {pageData ? (
+                <SimpleGrid
+                    ccm={cellComponentMap}
+                    columns={columns}
+                    options={options3}
+                    pageData={pageData}
+                />
+            ) : (
+                <></>
+            )}
+        </div>
+    );
 }
-
 
 async function main() {
     const columns = await getColumns();
-    ReactDOM.createRoot(document.getElementById("root")!).render(<Demo columns={columns}/>);
+    ReactDOM.createRoot(document.getElementById("root")!).render(
+        <Demo columns={columns} />,
+    );
 }
 
 main().catch(console.error);

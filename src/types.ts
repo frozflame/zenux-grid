@@ -11,7 +11,6 @@ export interface Row {
     item: any;
 }
 
-
 export interface CellProps {
     column: Column;
     row: Row;
@@ -20,13 +19,11 @@ export interface CellProps {
 export type CellComponent = (props: CellProps) => React.JSX.Element;
 export type CellComponentMap = Record<string, CellComponent>;
 
-
 export interface TdProps {
     ccm: CellComponentMap;
     column: Column;
     row: Row;
 }
-
 
 export interface APIPageData {
     items: any[];
@@ -36,6 +33,7 @@ export interface APIPageData {
 export interface PageData {
     rows: Row[];
     pageNumTotal: number;
+    total?: number;
 }
 
 export interface APIQueryParams {
@@ -51,24 +49,28 @@ export interface QueryParams {
     keywordField?: string;
 }
 
-
 export function translateQueryParams(queryParams: QueryParams): APIQueryParams {
     return {
         limit: queryParams.pageSize,
         skip: (queryParams.pageNum - 1) * queryParams.pageSize,
         keyword: queryParams.keyword,
-    }
+    };
 }
 
-export function untranslatePageData(apiPageData: APIPageData, pageSize: number, primaryKey = '_id'): PageData {
+export function untranslatePageData(
+    apiPageData: APIPageData,
+    pageSize: number,
+    primaryKey = "_id",
+): PageData {
     const rows = apiPageData.items.map((item: any) => {
         return {
             id: item[primaryKey],
             item: item,
-        }
+        };
     });
     return {
         rows: rows,
         pageNumTotal: Math.ceil(apiPageData.total / pageSize),
-    }
+        total: apiPageData.total,
+    };
 }

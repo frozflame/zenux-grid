@@ -6,7 +6,7 @@ import { joinClassNames } from "./utils";
 import { SearchForm } from "./components/search";
 import { SelectionWidget } from "./components/selection";
 import { PageSwitchWidget } from "./components/pageswitch";
-import { PageSizeWidget } from "./components/pagesize";
+import { PageNumWidget, PageSizeWidget } from "./components/pagesize";
 import { Table } from "./table";
 import { defaultCellComponentMap } from "./cells";
 
@@ -86,7 +86,7 @@ export function Grid({
 
     // TODO: better loading UI
     if (!pageData) {
-        return <div>Loading ... (react)</div>;
+        return <div>Loading ...</div>;
     }
 
     if (wires) {
@@ -126,9 +126,7 @@ export function Grid({
             </div>
             {options.withPageWidgets ? (
                 <div className="page-control">
-                    <div className="ctrl">
-                        Page {queryParams.pageNum} of {pageData.pageNumTotal}
-                    </div>
+                    <PageNumWidget queryManager={queryManager} />
                     <PageSwitchWidget queryManager={queryManager} />
                     <PageSizeWidget queryManager={queryManager} />
                 </div>

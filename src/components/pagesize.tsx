@@ -9,6 +9,32 @@ function sortNumbers(nums: number[]) {
     return [...new Set(nums)].sort((n1, n2) => n1 - n2);
 }
 
+function fmtPageNumText(
+    pageNum: number,
+    pageNumTotal: number,
+    total: number | undefined,
+) {
+    if (!total) {
+        return `Page ${pageNum} of ${pageNumTotal}`;
+    } else if (total < 2) {
+        return `Page ${pageNum} of ${pageNumTotal} (${total} item)`;
+    } else {
+        return `Page ${pageNum} of ${pageNumTotal} (${total} items)`;
+    }
+}
+
+export function PageNumWidget({ queryManager }: PageSizeWidgetProps) {
+    return (
+        <div className="ctrl">
+            {fmtPageNumText(
+                queryManager.queryParams.pageNum,
+                queryManager.pageData.pageNumTotal,
+                queryManager.pageData.total,
+            )}
+        </div>
+    );
+}
+
 export function PageSizeWidget({ queryManager }: PageSizeWidgetProps) {
     const pageSizeInput = useRef<HTMLSelectElement>(null);
 
