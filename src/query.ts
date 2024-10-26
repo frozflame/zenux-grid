@@ -1,5 +1,5 @@
-import {clamp} from "zenux";
-import {PageData, QueryParams} from "./types";
+import { clamp } from "zenux";
+import { PageData, QueryParams } from "./types";
 
 export class QueryManager {
     pageData: PageData;
@@ -7,7 +7,6 @@ export class QueryManager {
     queryParams: QueryParams;
     setQueryParams: (queryParams: QueryParams) => void;
     queryPageData: (queryParams: QueryParams) => Promise<PageData>;
-
 
     constructor(
         pageData: PageData,
@@ -27,7 +26,7 @@ export class QueryManager {
         this.setPageData(await this.queryPageData(queryParams));
     }
 
-    async reload(){
+    async reload() {
         this.setPageData(await this.queryPageData(this.queryParams));
     }
 
@@ -37,20 +36,25 @@ export class QueryManager {
     }
 
     nextPage() {
-        const pageNum = Math.min(this.queryParams.pageNum + 1, this.pageData.pageNumTotal);
+        const pageNum = Math.min(
+            this.queryParams.pageNum + 1,
+            this.pageData.pageNumTotal,
+        );
         this.changePageNum(pageNum);
     }
 
     changePageNum(pageNum: number) {
         pageNum = clamp(pageNum, 1, this.pageData.pageNumTotal);
-        const queryParams = {...this.queryParams, pageNum};
+        const queryParams = { ...this.queryParams, pageNum };
         this.setQueryParams(queryParams);
         this.apply(queryParams).catch(console.error);
     }
 
     changeKeyword(keyword: string) {
         const queryParams = {
-            ...this.queryParams, pageNum: 1, keyword,
+            ...this.queryParams,
+            pageNum: 1,
+            keyword,
         };
         this.setQueryParams(queryParams);
         this.apply(queryParams).catch(console.error);
@@ -61,7 +65,9 @@ export class QueryManager {
             return;
         }
         const queryParams = {
-            ...this.queryParams, pageNum: 1, pageSize,
+            ...this.queryParams,
+            pageNum: 1,
+            pageSize,
         };
         this.setQueryParams(queryParams);
         this.apply(queryParams).catch(console.error);

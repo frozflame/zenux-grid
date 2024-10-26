@@ -1,13 +1,18 @@
-import React, {FormEvent, useRef} from "react";
-import {QueryManager} from "../query";
-import {SelectionManager} from "../selection";
+import React, { FormEvent, useRef } from "react";
+import { QueryManager } from "../query";
+import { SelectionManager } from "../selection";
 
 interface SearchFormProps {
     queryManager: QueryManager;
     selectionManager: SelectionManager;
+    keywordFields?: string[];
 }
 
-export function SearchForm({queryManager, selectionManager}: SearchFormProps) {
+export function SearchForm({
+    queryManager,
+    selectionManager,
+    keywordFields,
+}: SearchFormProps) {
     const keywordInput = useRef<HTMLInputElement>(null);
 
     function handleSubmit(event: FormEvent) {
@@ -24,12 +29,36 @@ export function SearchForm({queryManager, selectionManager}: SearchFormProps) {
         selectionManager.clear();
     }
 
-    return <form action="" onSubmit={handleSubmit} onReset={handleReset} className="search-form">
-        <input className="ctrl" type="text" name="keyword" ref={keywordInput} placeholder="search..."/>
-        <select name="field" id="input-field" disabled={true} className="ctrl" defaultValue="">
+    const keywordFieldInput = keywordFields ? (
+        <select
+            name="field"
+            id="input-field"
+            disabled={true}
+            className="ctrl"
+            defaultValue=""
+        >
             <option value="">&#10033;</option>
         </select>
-        <input className="ctrl" type="reset"/>
-        <input className="ctrl" type="submit"/>
-    </form>
+    ) : (
+        <></>
+    );
+    return (
+        <form
+            action=""
+            onSubmit={handleSubmit}
+            onReset={handleReset}
+            className="search-form"
+        >
+            <input
+                className="ctrl"
+                type="text"
+                name="keyword"
+                ref={keywordInput}
+                placeholder="search..."
+            />
+            {keywordFieldInput}
+            <input className="ctrl" type="reset" />
+            <input className="ctrl" type="submit" />
+        </form>
+    );
 }

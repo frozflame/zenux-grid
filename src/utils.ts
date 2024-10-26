@@ -1,6 +1,9 @@
 type NumOrNull = number | null;
 
-export function getVisiblePageNums(pageNum: number, pageNumTotal: number): NumOrNull[] {
+export function getVisiblePageNums(
+    pageNum: number,
+    pageNumTotal: number,
+): NumOrNull[] {
     const nums: NumOrNull[] = [1];
     for (let num = 2; num < pageNumTotal; num++) {
         if (Math.abs(pageNum - num) < 3) {
@@ -15,9 +18,8 @@ export function getVisiblePageNums(pageNum: number, pageNumTotal: number): NumOr
     return nums;
 }
 
-
 export function joinClassNames(...classNames: (string | undefined)[]) {
     classNames = classNames.filter(Boolean);
     if (classNames.length == 0) return undefined;
-    return classNames.join(' ');
+    return classNames.join(" ");
 }

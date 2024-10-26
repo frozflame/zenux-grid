@@ -8,58 +8,51 @@ module.exports = {
      * the environment - development, production, none. tells webpack
      * to use its built-in optimizations accordingly. default is production
      */
-    mode: "development",
-    /** "entry"
+    mode: "development" /** "entry"
      * the entry point
-     */
+     */,
     entry: "./src/demo.tsx",
     output: {
         /** "path"
          * the folder path of the output file
          */
-        path: path.resolve(__dirname, "public"),
-        /** "filename"
+        path: path.resolve(__dirname, "public") /** "filename"
          * the name of the output file
-         */
+         */,
         filename: "main.js",
-        publicPath: "/"
-    },
-    /** "target"
+        publicPath: "/",
+    } /** "target"
      * setting "node" as target app (server side), and setting it as "web" is
      * for browser (client side). Default is "web"
-     */
+     */,
     target: "web",
     devtool: "source-map",
     devServer: {
         /** "port"
          * port of dev server
          */
-        port: "5124",
-        /** "static"
+        port: "5124" /** "static"
          * This property tells Webpack what static file it should serve
-         */
-        static: ["./public"],
-        /** "open"
+         */,
+        static: ["./public"] /** "open"
          * opens the browser after server is successfully started
-         */
+         */,
         historyApiFallback: true,
-        open: true,
-        /** "hot"
+        open: true /** "hot"
          * enabling and disabling HMR. takes "true", "false" and "only".
          * "only" is used if enable Hot Module Replacement without page
          * refresh as a fallback in case of build failures
-         */
-        hot: true,
-        /** "liveReload"
+         */,
+        hot: true /** "liveReload"
          * disable live reload on the browser. "hot" must be set to false for this to work
-         */
+         */,
         liveReload: true,
         proxy: [
             {
                 context: ["/api"],
-                target: 'http://127.0.0.1:5005'
-            }
-        ]
+                target: "http://127.0.0.1:3990",
+            },
+        ],
     },
     resolve: {
         /** "extensions"
@@ -67,7 +60,7 @@ module.exports = {
          * resolve the one with the extension listed first in the array and skip the rest.
          * This is what enables users to leave off the extension when importing
          */
-        extensions: ['.js', '.jsx', '.json', '.tsx', '.ts']
+        extensions: [".js", ".jsx", ".json", ".tsx", ".ts"],
     },
     module: {
         /** "rules"
@@ -79,7 +72,7 @@ module.exports = {
         rules: [
             {
                 test: /\.tsx?$/,
-                use: 'ts-loader',
+                use: "ts-loader",
                 exclude: /node_modules/,
             },
             {
@@ -90,23 +83,21 @@ module.exports = {
                 test: /\.s[ac]ss$/,
                 use: [
                     // Creates `style` nodes from JS strings
-                    "style-loader",
-                    // Translates CSS into CommonJS
-                    "css-loader",
-                    // Compiles Sass to CSS
+                    "style-loader", // Translates CSS into CommonJS
+                    "css-loader", // Compiles Sass to CSS
                     "sass-loader",
                 ],
             },
             {
-                test: /\.(js|jsx)$/,    //kind of file extension this rule should look for and apply in test
+                test: /\.(js|jsx)$/, //kind of file extension this rule should look for and apply in test
                 exclude: /node_modules/, //folder to be excluded
-                use: 'babel-loader' //loader which we are going to use
-            }
-        ]
+                use: "babel-loader", //loader which we are going to use
+            },
+        ],
     },
     performance: {
         hints: false,
         maxEntrypointSize: 512000,
-        maxAssetSize: 512000
-    }
+        maxAssetSize: 512000,
+    },
 };

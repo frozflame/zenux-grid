@@ -1,6 +1,10 @@
 changelog
 ---------
 
+ver 0.3.4
+* SearchForm keywordFields
+* fmt with prettier
+
 ver 0.3.3
 * fix :hover backgournd color of tables withStickyEndColumns=true
 * add YesNo to defaultCellComponentMap

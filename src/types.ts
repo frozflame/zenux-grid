@@ -48,6 +48,7 @@ export interface QueryParams {
     pageNum: number;
     pageSize: number;
     keyword: string;
+    keywordField?: string;
 }
 
 

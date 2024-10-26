@@ -8,7 +8,7 @@ export class SelectionManager {
         selection: Set<string>,
         setSelection: (selection: Set<string>) => void,
         selectable: boolean,
-        setSelectable: (selectable: boolean) => void
+        setSelectable: (selectable: boolean) => void,
     ) {
         this.selection = selection;
         this.setSelection = setSelection;
