@@ -80,7 +80,6 @@ export function Grid({
     );
 
     useEffect(() => {
-        // console.log('in Grid(), in useEffect');
         queryManager.apply(initialQueryParams).catch(console.error);
     }, []);
 
@@ -103,7 +102,7 @@ export function Grid({
                 {options.withSelectionButtons ? (
                     <SelectionWidget {...{ pageData, selectionManager }} />
                 ) : (
-                    <></>
+                    <div></div>
                 )}
 
                 {options.withSearchForm ? (

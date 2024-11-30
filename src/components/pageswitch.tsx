@@ -1,6 +1,6 @@
 import { QueryManager } from "../query";
 import { getVisiblePageNums } from "../utils";
-import React from "react";
+import React, { useState } from "react";
 
 export interface PageSwitchWidgetProps {
     queryManager: QueryManager;
@@ -16,6 +16,9 @@ export function PageSwitchWidget({ queryManager }: PageSwitchWidgetProps) {
     if (pageNumTotal < 2) {
         return <></>;
     }
+    const [pageNumInputValue, setPageNumInputValue] = useState(
+        queryManager.queryParams.pageNum,
+    );
 
     const visiblePageNums = getVisiblePageNums(pageNum, pageNumTotal);
     const pageLinks = visiblePageNums.map((num: number | null, idx) => {
@@ -52,9 +55,23 @@ export function PageSwitchWidget({ queryManager }: PageSwitchWidgetProps) {
         queryManager.nextPage();
     }
 
+    function handlePageNumInputChange(
+        event: React.FormEvent<HTMLInputElement>,
+    ) {
+        setPageNumInputValue(parseInt(event.currentTarget.value));
+    }
+
+    function handlePageNumFormSubmit(event: React.FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+        queryManager.changePageNum(pageNumInputValue);
+    }
+
     return (
-        <>
-            <div className="btn-group page-num-control">
+        <div style={{ display: "inline-flex", justifyContent: "center" }}>
+            <div
+                className="btn-group page-num-control"
+                style={{ display: "inline-flex", justifyContent: "center" }}
+            >
                 <button onClick={prevPage} disabled={pageNum === 1}>
                     Prev
                 </button>
@@ -63,6 +80,20 @@ export function PageSwitchWidget({ queryManager }: PageSwitchWidgetProps) {
                     Next
                 </button>
             </div>
-        </>
+            <form
+                className="btn-group"
+                style={{ display: "inline-block" }}
+                onSubmit={handlePageNumFormSubmit}
+            >
+                <input
+                    type="number"
+                    value={pageNumInputValue}
+                    min={1}
+                    max={queryManager.pageData.pageNumTotal}
+                    className="ctrl page-num-input"
+                    onChange={handlePageNumInputChange}
+                />
+            </form>
+        </div>
     );
 }

@@ -92,11 +92,12 @@ function Demo({ columns }: DemoProps) {
         withSearchForm: true,
         withSelectionButtons: true,
         withStickyEndColumns: false,
+        withPageWidgets: true,
     };
     const options2: GridOptions = {
         withPageWidgets: true,
         withSearchForm: true,
-        withSelectionButtons: true,
+        withSelectionButtons: false,
         withStickyEndColumns: true,
     };
     const options3: GridOptions = {

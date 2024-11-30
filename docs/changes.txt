@@ -1,5 +1,9 @@
-changelog
----------
+changes of zenux-grid
+---------------------
+
+ver 0.3.6
+* search widget on the right
+* change page num through text input
 
 ver 0.3.5
 * add PageNumWidget
