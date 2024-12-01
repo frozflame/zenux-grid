@@ -13,14 +13,20 @@ export function SearchForm({
     selectionManager,
     keywordFields,
 }: SearchFormProps) {
-    const keywordInput = useRef<HTMLInputElement>(null);
+    const keywordInputRef = useRef<HTMLInputElement>(null);
+    const keywordFieldInputRef = useRef<HTMLSelectElement>(null);
 
     function handleSubmit(event: FormEvent) {
-        if (!keywordInput.current) {
+        if (!keywordInputRef.current) {
             return;
         }
         event.preventDefault();
-        queryManager.changeKeyword(keywordInput.current.value.trim());
+        const keywordPrefix = keywordFieldInputRef.current
+            ? `--${keywordFieldInputRef.current.value}--`
+            : "";
+        queryManager.changeKeyword(
+            keywordPrefix + keywordInputRef.current.value.trim(),
+        );
         selectionManager.clear();
     }
 
@@ -33,11 +39,15 @@ export function SearchForm({
         <select
             name="field"
             id="input-field"
-            disabled={true}
             className="ctrl"
-            defaultValue=""
+            defaultValue={keywordFields.length > 0 ? keywordFields[0] : ""}
+            ref={keywordFieldInputRef}
         >
-            <option value="">&#10033;</option>
+            {keywordFields.map((name, idx) => (
+                <option key={idx} value={name}>
+                    {name}
+                </option>
+            ))}
         </select>
     ) : (
         <></>
@@ -53,7 +63,7 @@ export function SearchForm({
                 className="ctrl"
                 type="text"
                 name="keyword"
-                ref={keywordInput}
+                ref={keywordInputRef}
                 placeholder="search..."
             />
             {keywordFieldInput}

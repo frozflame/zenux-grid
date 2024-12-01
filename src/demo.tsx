@@ -40,7 +40,9 @@ function ActionButton(props: ActionButtonProps) {
 
 function Actions({ column, row }: CellProps) {
     const actions: any[] = row.item[column.key!];
-    const elements = actions.map((action, idx) => <ActionButton {...action} />);
+    const elements = actions.map((action, idx) => (
+        <ActionButton key={idx} {...action} />
+    ));
     return <div>{elements}</div>;
 }
 
@@ -89,6 +91,7 @@ function Demo({ columns }: DemoProps) {
             pageNum: 1,
             pageSize: 20,
         },
+        keywordFields: ["full-text", "id"],
         withSearchForm: true,
         withSelectionButtons: true,
         withStickyEndColumns: false,

@@ -30,6 +30,7 @@ export interface GridWires {
 export interface GridOptions {
     initialPageData?: PageData;
     initialQueryParams?: QueryParams;
+    keywordFields?: string[];
     withPageWidgets?: boolean;
     withSearchForm?: boolean;
     withStickyEndColumns?: boolean;
@@ -109,6 +110,7 @@ export function Grid({
                     <SearchForm
                         queryManager={queryManager}
                         selectionManager={selectionManager}
+                        keywordFields={options.keywordFields}
                     />
                 ) : (
                     <></>
